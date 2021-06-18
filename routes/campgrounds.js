@@ -16,10 +16,10 @@ router.get('/new', isLoggedIn, campgounds.renderNewForm)
 
 router.get('/:id', catchAsync(campgounds.showCampground));
 
-router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgounds.renderEditForm))
-
-router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(campgounds.updateCampground));
+router.put('/:id', isLoggedIn, isAuthor,upload.array('image') , validateCampground, catchAsync(campgounds.updateCampground));
 
 router.delete('/:id', isLoggedIn, isAuthor, catchAsync(campgounds.deleteCampground));
+
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgounds.renderEditForm))
 
 module.exports = router;
