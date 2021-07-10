@@ -50,8 +50,8 @@
                         <h5> Delete Images </h5>
                         <div class="row row-cols-1 row-cols-md-4 g-4 mb-3">
                             <% campground.images.forEach((image, i)=> { %>
-                                <div class="col">
-                                    <div class="card"  style="max-width: 220px;">
+                                <div class="col-md-4 offset-md-1">
+                                    <div class="card" style="max-width: 220px;">
                                         <img class="card-img" src="<%= image.thumbnail %>" alt="">
                                         <div class="card-img-overlay text-end pt-1 pe-2">
                                             <label class="visually-hidden" for="image-<%= i %>">Delete Image</label>
@@ -62,12 +62,11 @@
                                 </div>
                                 <% }) %>
                         </div>
-                        <div class="mb-3">
-                            <button class="btn btn-info">Update Campground</button>
+                        <div>
+                            <button class="btn btn-info mt-2">Update Campground</button>
+                            <a href="/campgrounds/<%= campground._id%>"></a><button class="btn btn-danger mt-2">Cancel</button></a>
                         </div>
                     </form>
-                    <a href="/campgrounds/<%= campground._id%>">Back To Campground</a>
-
                 </div>
             </div>
         </div>
