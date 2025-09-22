@@ -1,41 +1,74 @@
-<% layout('layouts/boilerplate') %>
+<% layout('layouts/boilerplate') %> 
+
     <div id="cluster-map"></div>
-    <h1 class="mt-3">All Campgrounds</h1>
-    <% for (let campground of campgrounds){%>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-4">
-                    <% if (campground.images.length) { %>
-                        <img class="img-fluid" src="<%=campground.images[0].url%>" alt="">
-                        <% }else { %>
-                            <img class="img-fluid"
-                                src="https://res.cloudinary.com/dakj8eiql/image/upload/v1624882980/YelpCamp/mtt3ltpv4keo27qgnsu0.jpg"
-                                alt="">
-                            <% } %>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <%= campground.title %>
-                        </h5>
-                        <p class="card-text">
-                            <%= campground.description %>
-                        </p>
-                        <p class="card-text">
-                            <small class="text-muted">
-                                <%= campground.location %>
-                            </small>
-                        </p>
-                        <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">View <%= campground.title
-                                %></a>
-                    </div>
-                </div>
+    <h1>All Campgrounds</h1>
+    <!-- <div><a href="/campgrounds/new">Add campgound</a></div> -->
+
+<% if (typeof searchQuery !=='undefined' && searchQuery) { %>
+    <h5 class="text-muted">Showing results for "<%= searchQuery %>"</h5>
+<% } %>
+<div class="container mt-4">
+  <% if (campgrounds.length > 0) { %>
+    <div class="row">
+      <% campgrounds.forEach((campground, i) => { %>
+        <div class="col-md-6 mb-4">
+          <div class="card h-100 shadow-sm">
+            <% if (campground.images.length) { %>
+              <img class="card-img-top" alt="" src="<%= campground.images[0].url %>" 
+                   style="height: 300px; object-fit: cover;">
+            <% } else { %>
+              <img class="card-img-top" alt="" 
+                   src="https://res.cloudinary.com/dakj8eiql/image/upload/v1757947697/CampExplorer/camping3_um0dwr.jpg" 
+                   style="height: 300px; object-fit: cover;">
+            <% } %>
+
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title"><%= campground.title %></h5>
+              <p class="card-text text-muted"><%= campground.location %></p>
+              <p class="card-text"><%= campground.description.substring(0, 100) %>...</p>
+              <p class="fw-bold">$<%= campground.price %>/night</p>
+
+              <!-- Rating -->
+              <% if (campground.reviews && campground.reviews.length > 0) { %>
+                <% let validRatings = campground.reviews.map(r => r.rating)
+                    .filter(r => typeof r === "number" && !isNaN(r));
+                   let avgRating = validRatings.length > 0
+                    ? (validRatings.reduce((a,b) => a+b,0)/validRatings.length).toFixed(1)
+                    : null; %>
+
+                <% if (avgRating) { %>
+                  <p class="text-warning mb-1">
+                    <% for (let i=0; i<Math.floor(avgRating); i++) { %>★<% } %>
+                    <% for (let i=Math.floor(avgRating); i<5; i++) { %>☆<% } %>
+                    <small>(<%= avgRating %>/5, <%= validRatings.length %> reviews)</small>
+                  </p>
+                <% } %>
+              <% } else { %>
+                <p class="text-muted"><em>No reviews yet</em></p>
+              <% } %>
+
+              <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary mt-auto">View Campground</a>
             </div>
+          </div>
         </div>
-        <% }%>
 
-            <script>
-                const campgrounds = { features: <%- JSON.stringify(campgrounds) %> };
-            </script>
-
-            <script src="/javascripts/clusterMap.js"></script>
+        <% if ((i+1) % 2 === 0) { %>
+          </div><div class="row"><!-- start new row after every 2 cards -->
+        <% } %>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <div class="text-center my-5">
+        <h4 class="text-muted">No campgrounds found</h4>
+        <% if (typeof searchQuery !=='undefined' && searchQuery) { %>
+            <p>Try searching with a different name or location.</p>
+            <a href="/campgrounds" class="btn btn-secondary">Back to All Campgrounds</a>
+            <% } %>
+    </div>
+<% } %>
+   
+<script>
+    const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+    const campgrounds = { features: <%- JSON.stringify(campgrounds) %>}
+</script>
+<script src="/javascripts/clusterMap.js"></script>

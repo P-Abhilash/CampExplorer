@@ -1,58 +1,102 @@
-<% layout('layouts/boilerplate')%>
-    <div class="row my-3">
-        <h1 class="text-center">New Campground</h1>
-        <div class="col-md-6 offset-md-3">
-            <div class="card shadow">
-                <div class="card-body">
-                    <form action="/campgrounds" method="POST" novalidate class="validated-form"
-                        enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label class="form-label" for="title">Title</label>
-                            <input class="form-control" type="text" id="title" name="campground[title]" required>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="location">Location</label>
-                            <input class="form-control" type="text" id="location" name="campground[location]" required>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="price">Campground Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="price-label">$</span>
-                                <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
-                                    aria-describedby="price-label" name="campground[price]" required>
-                            </div>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
+<% layout('layouts/boilerplate') %>
 
-                        <div class="mb-3">
-                            <label class="form-label" for="description">Description</label>
-                            <textarea class="form-control" type="text" id="description" name="campground[description]"
-                                required></textarea>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="image" class="form-label"><span class="form-file-text">Choose
-                                    image(s)</span></label>
-                            <input class="form-control" name="image" type="file" id="image" multiple>
-                        </div>
-                        <div>
-                            <button class="btn btn-success mt-1">Add Campground</button>
-                            <a onclick="window.location='/campgrounds';return false;"><button class="btn btn-danger mt-1">Cancel</button></a>
-                        </div>
-                    </form>
-                    <div>
-                    </div>
-                </div>
-            </div>
+<!-- //offset can be used as one way of centering things -->
+<div class="row">
+  <h1 class="text-center">New campground</h1>
+  <div class="col-md-6 offset-md-3">
+    <form
+      action="/campgrounds"
+      method="post"
+      novalidate
+      class="validated-form"
+      enctype="multipart/form-data"
+    >
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          value="<%= campground ? campground.title : '' %>"
+          name="campground[title]"
+          required
+        />
+        <div class="invalid-feedback">Please select a valid title.</div>
+      </div>
+      <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input
+          type="text"
+          class="form-control"
+          id="location"
+          name="campground[location]"
+          placeholder="Search for a place"
+          required
+        />
+        <div class="invalid-feedback">Please select a valid location.</div>
+        <input
+          type="hidden"
+          id="locationValid"
+          name="locationValid"
+          value="false"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="image" class="form-label">Choose Image(s)</label>
+        <input
+          class="form-control"
+          type="file"
+          id="image"
+          name="image"
+          accept="image/*"
+          multiple
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="price">Campground Price</label>
+        <div class="input-group">
+          <span class="input-group-text" id="price-label">$</span>
+          <input
+            type="number"
+            id="price"
+            class="form-control"
+            name="campground[price]"
+            value="<%= campground ? campground.price : '' %>"
+            placeholder="0.00"
+            aria-label="price"
+            aria-describedby="price-label"
+            required
+          />
+          <div class="invalid-feedback">Please select a valid price.</div>
         </div>
-    </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          type="text"
+          class="form-control"
+          id="description"
+          name="campground[description]"
+          required
+        >
+<%= campground ? campground.description : '' %></textarea
+        >
+        <div class="invalid-feedback">Please select a valid description.</div>
+      </div>
+      <div class="mb-3">
+        <button type="submit" class="btn btn-success">Submit</button>
+      </div>
+    </form>
+    <!-- <a href="/campgrounds">All campgounds</a> -->
+  </div>
+</div>
+<script>
+  const maptilerApiKey = "<%- process.env.MAPTILER_API_KEY %>";
+  const price = document.getElementById("price");
+  price.addEventListener("keydown", (e) => {
+    if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+  });
+</script>
+<script src="/javascripts/autocomplete.js"></script>

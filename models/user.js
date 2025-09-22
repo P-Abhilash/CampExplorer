@@ -1,16 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
 
-
-const UserSchema = new Schema({
-    email:{
-        type: String,
-        required: true,
-        unique: true
-    }
+const userSchema = new Schema({
+  _id: { type: String, required: true }, // Supabase UUID
+  email: { type: String, required: true, unique: true },
+  name: { type: String },
+  avatarUrl: { type: String },
 });
 
-UserSchema.plugin(passportLocalMongoose);
-
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", userSchema);

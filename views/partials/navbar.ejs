@@ -1,24 +1,62 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/campgrounds">YelpCamp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav ">
-                <a class="nav-link" href="/">Home</a>
-                <a class="nav-link" href="/campgrounds">Campgrounds</a>
-                <a class="nav-link" href="/campgrounds/new">New Campground</a>
-            </div>
-            <div class="navbar-nav ms-auto">
-                <% if (!currentUser) { %>
-                    <a class="nav-link" href="/login">Login</a>
-                    <a class="nav-link" href="/register">register</a>
-                <% } else { %>
-                    <a class="nav-link" href="/logout">logout</a>
-                <% } %>
-            </div>
-        </div>
+<script
+  src="https://kit.fontawesome.com/6acd34060b.js"
+  crossorigin="anonymous"
+></script>
+
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">CampExplorer</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/campgrounds">Campgrounds</a>
+        <a class="nav-link" href="/campgrounds/new">New Campgrounds</a>
+      </div>
+
+      <!-- Centered Search Bar -->
+      <div class="mx-auto">
+        <form
+          class="d-flex align-items-center search-form"
+          action="/campgrounds"
+          method="GET"
+          style="width: 400px; max-width: 100%"
+        >
+          <input
+            class="form-control me-3"
+            type="search"
+            name="q"
+            placeholder="Search campgrounds..."
+            aria-label="Search"
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+          />
+          <button class="btn btn-outline-light ms-4" type="submit">
+            Search
+          </button>
+        </form>
+      </div>
+
+      <div class="navbar-nav ms-auto">
+        <% if(!currentUser){ %>
+        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link" href="/register">Register</a>
+        <% }else{ %>
+        <span class="navbar-text text-light me-2">
+          Welcome, <%= currentUser.name || currentUser.email %>
+        </span>
+        <a class="nav-link" href="/logout">Logout</a>
+        <% } %>
+      </div>
     </div>
+  </div>
 </nav>

@@ -1,67 +1,78 @@
-const mongoose = require('mongoose');
-const Review = require('./review');
+const { string } = require("joi");
+const mongoose = require("mongoose");
+const { campgroundSchema } = require("../schemas");
+const Review = require("./review");
 const Schema = mongoose.Schema;
-const { cloudinary } = require('../cloudinary')
-
-const opts = { toJSON: { virtuals: true } };
 
 const ImageSchema = new Schema({
-    url: String,
-    filename: String
+  url: String,
+  filename: String,
 });
 
-ImageSchema.virtual('thumbnail').get(function () {
-    return this.url.replace('/upload', '/upload/w_200');
+ImageSchema.virtual("thumbnail").get(function () {
+  return this.url.replace("/upload", "/upload/w_200");
 });
+//the reason we use virtual is bcz we dont wanna save it to our database we are deriving it with what is already stored in database
 
-const CampgroundSchema = new Schema({
+const opts = { timestamps: true, toJSON: { virtuals: true } }; //By default mongoose does not include virtuals when you convert a document to JSON and since we are stringifying campgroundsinside our campgrounds/index.js to use it inside clustermap we want this virtual field properties.popUpMarkup to be included
+
+const CampgroundSchema = new Schema(
+  {
     title: String,
     images: [ImageSchema],
     geometry: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            required: true
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
     price: Number,
     description: String,
     location: String,
     author: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+      type: String,
+      ref: "User",
     },
     reviews: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Review'
-        }
-    ]
-}, opts);
+      {
+        type: String,
+        ref: "Review",
+      },
+    ],
+  },
+  opts
+);
 
-CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
-    return `
-    <a href="/campgrounds/${this._id}"><button class="btn btn-info">${this.title}</button></a>
-    <strong><p>${this.description.substring(0, 20)}...</p></strong>`
+const Joi = require("joi");
+
+module.exports.campgroundSchema = Joi.object({
+  campground: Joi.object({
+    title: Joi.string().required(),
+    price: Joi.number().min(0).precision(2).required(),
+    location: Joi.string().required(),
+    description: Joi.string().required(),
+  }).required(),
 });
 
-CampgroundSchema.post('findOneAndDelete', async function (doc) {
-    if (doc.reviews) {
-        await Review.deleteMany({
-            _id: {
-                $in: doc.reviews
-            }
-        })
-    }
-    if (doc.images) {
-        for (const img of doc.images) {
-            await cloudinary.uploader.destroy(img.filename);
-        }
-    }
-})
+CampgroundSchema.virtual("properties.popUpMarkup").get(function () {
+  return `
+    <strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+    <p>${this.description.substring(0, 20)}...</p>`;
+});
 
-module.exports = mongoose.model('Campground', CampgroundSchema);
+//findOneAndDelete middleware will be triggered when we delete campground using findByIdAndDelete according to mongoose
+CampgroundSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    await Review.deleteMany({
+      _id: {
+        $in: doc.reviews,
+      },
+    });
+  }
+});
+module.exports = mongoose.model("Campground", CampgroundSchema);
