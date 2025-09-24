@@ -4,6 +4,8 @@ const users = require("../controllers/users");
 const User = require("../models/user");
 const supabase = require("../utils/supabaseClient");
 
+const APP_URL = process.env.APP_URL || "http://localhost:3000";
+
 // --------------------
 // Email/Password Routes
 // --------------------
@@ -21,7 +23,7 @@ router.get("/auth/google", async (req, res) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/auth/callback",
+        redirectTo: `${APP_URL}/auth/callback`,
         queryParams: { access_type: "offline", prompt: "consent" },
       },
     });
@@ -103,7 +105,7 @@ router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:3000/auth/reset-password",
+      redirectTo: `${APP_URL}/auth/reset-password`,
     });
 
     if (error) {

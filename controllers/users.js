@@ -1,5 +1,6 @@
 const supabase = require("../utils/supabaseClient");
 const User = require("../models/user");
+const APP_URL = process.env.APP_URL || "http://localhost:3000";
 
 // Render Register Page
 module.exports.renderRegister = (req, res) => {
@@ -18,7 +19,7 @@ module.exports.register = async (req, res) => {
       password,
       options: {
         data: { full_name: name },
-        emailRedirectTo: "http://localhost:3000/auth/callback", // 👈 redirect after email verify
+        emailRedirectTo: `${APP_URL}/auth/callback`, // 👈 redirect after email verify
       },
     });
 
