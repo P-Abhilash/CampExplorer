@@ -12,7 +12,7 @@ const {
 const User = require("../models/user");
 const Review = require("../models/review");
 
-mongoose.connect("mongodb://localhost:27017/yelp-camp", {
+mongoose.connect("mongodb://localhost:27017/camp-explorer", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

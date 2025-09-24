@@ -3,7 +3,9 @@ const User = require("../models/user");
 
 // Render Register Page
 module.exports.renderRegister = (req, res) => {
-  res.render("users/register", { formData: {} });
+  const formData = req.session.formData || {};
+  delete req.session.formData; // clear after using, so it doesn't persist forever
+  res.render("users/register", { formData });
 };
 
 // Handle Register → just call Supabase signUp, let email link redirect back

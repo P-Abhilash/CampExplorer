@@ -66,9 +66,13 @@ router.get(
       req.flash("error", "Campground not found!");
       return res.redirect("/campgrounds");
     }
-    const formData = req.session.formData || campground;
+    const formData = req.session.formData || {};
     delete req.session.formData;
-    res.render("campgrounds/edit", { campground: formData });
+
+    // Ensure _id is always present
+    res.render("campgrounds/edit", {
+      campground: { ...campground.toObject(), ...formData },
+    });
   })
 );
 

@@ -102,9 +102,10 @@ module.exports.showCampground = async (req, res) => {
 };
 
 module.exports.renderEditForm = async (req, res) => {
-  const campground = await Campground.findById(req.params.id);
+  const { id } = req.params;
+  const campground = await Campground.findById(id);
   if (!campground) {
-    req.flash("error", "Can't find that campground");
+    req.flash("error", "Cannot find that campground!");
     return res.redirect("/campgrounds");
   }
   res.render("campgrounds/edit", { campground });
@@ -112,48 +113,57 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateCampground = async (req, res, next) => {
   const { id } = req.params;
-
-  if (req.fileValidationError) {
-    req.flash("error", req.fileValidationError);
-    return res.redirect(`/campgrounds/${id}/edit`);
-  }
-
-  const geoData = await maptilerClient.geocoding.forward(
-    req.body.campground.location,
-    { limit: 1 }
-  );
-
-  if (
-    req.body.locationValid !== "true" ||
-    !geoData ||
-    !geoData.features ||
-    geoData.features.length === 0
-  ) {
-    req.flash("error", "Invalid location. Please enter a valid place.");
-    return res.redirect(`/campgrounds/${id}/edit`);
-  }
-
-  const campground = await Campground.findByIdAndUpdate(
-    id,
-    req.body.campground,
-    { runValidators: true, new: true }
-  );
-  campground.geometry = geoData.features[0].geometry;
-  const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
-  campground.images.push(...imgs); //push on existing images
-  await campground.save();
-  if (req.body.deleteImages) {
-    for (let filename of req.body.deleteImages) {
-      await cloudinary.uploader.destroy(filename);
+  try {
+    if (req.fileValidationError) {
+      req.flash("error", req.fileValidationError);
+      return res.redirect(`/campgrounds/${id}/edit`);
     }
-    await campground.updateOne({
-      $pull: { images: { filename: { $in: req.body.deleteImages } } },
-    });
-    // console.log(campground);
+
+    const geoData = await maptilerClient.geocoding.forward(
+      req.body.campground.location,
+      { limit: 1 }
+    );
+
+    if (
+      req.body.locationValid !== "true" ||
+      !geoData ||
+      !geoData.features ||
+      geoData.features.length === 0
+    ) {
+      req.flash("error", "Invalid location. Please enter a valid place.");
+      return res.redirect(`/campgrounds/${id}/edit`);
+    }
+
+    const campground = await Campground.findByIdAndUpdate(
+      id,
+      req.body.campground,
+      { runValidators: true, new: true }
+    );
+    campground.geometry = geoData.features[0].geometry;
+    const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    campground.images.push(...imgs); //push on existing images
+    await campground.save();
+    if (req.body.deleteImages) {
+      for (let filename of req.body.deleteImages) {
+        await cloudinary.uploader.destroy(filename);
+      }
+      await campground.updateOne({
+        $pull: { images: { filename: { $in: req.body.deleteImages } } },
+      });
+      // console.log(campground);
+    }
+    req.flash("success", "Successfully updated a campground!");
+    //res.send(req.body.campground);
+    res.redirect(`/campgrounds/${campground._id}`);
+  } catch (e) {
+    console.error("❌ Update error:", e);
+    req.flash(
+      "error",
+      e.message || "Something went wrong updating campground."
+    );
+    console.error("Redirecting back to:", `/campgrounds/${id}/edit`);
+    res.redirect(`/campgrounds/${id}/edit`);
   }
-  req.flash("success", "Successfully updated a campground!");
-  //res.send(req.body.campground);
-  res.redirect(`/campgrounds/${campground._id}`);
 };
 
 module.exports.deleteCampground = async (req, res) => {

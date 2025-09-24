@@ -1,7 +1,7 @@
-// if(process.env.NODE_ENV !== "production"){
-//     require('dotenv').config();
-// }
-require("dotenv").config();
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv').config();
+}
+// require("dotenv").config();
 
 // console.log(process.env.CLOUDINARY_CLOUD_NAME);
 // console.log(process.env.CLOUDINARY_KEY);
@@ -26,7 +26,7 @@ const reviewRoutes = require("./routes/reviews");
 
 const MongoDBStore = require("connect-mongo")(session);
 
-const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/camp-explorer";
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
