@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "20.15.1"
+  },
   "name": "camp-explorer",
   "version": "1.0.0",
   "description": "Updated CampExplorer project",
