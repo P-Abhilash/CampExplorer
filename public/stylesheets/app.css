@@ -43,3 +43,41 @@
 .delete-btn:hover {
     background: #dc3545;
 }
+
+#cluster-map {
+  width: 100%;
+  height: 300px;   /* default for mobile */
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  #cluster-map {
+    height: 500px; /* bigger on tablet/desktop */
+  }
+}
+.delete-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.campground-thumb {
+  width: 100%;
+  height: 180px;          /* fixed height for uniform grid */
+  object-fit: cover;      /* crops without stretching */
+  border-radius: 8px;
+  display: block;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border-radius: 50%;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+}

@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/stylesheets/stars.css" />
 
 <div class="row">
-  <div class="col-6">
+  <div class="col-12 col-md-6 mb-3">
     <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner">
         <% if(campground.images.length> 0){ %> <%
@@ -10,8 +10,12 @@
         <div class="carousel-item <%= i===0 ? 'active' : '' %>">
           <img
             src="<%= img.url %>"
-            class="d-block w-100"
-            style="height: 60vh; object-fit: contain; background-color: #f8f9fa"
+            class="d-block w-100 img-fluid"
+            style="
+              max-height: 400px;
+              object-fit: contain;
+              background-color: #f8f9fa;
+            "
             alt="Campground image"
           />
         </div>
@@ -19,32 +23,36 @@
         <div class="carousel-item active">
           <img
             src="https://res.cloudinary.com/dakj8eiql/image/upload/v1757951730/no_images_exai0j.jpg"
-            class="d-block w-100"
-            style="height: 60vh; object-fit: contain; background-color: #f8f9fa"
+            class="d-block w-100 img-fluid"
+            style="
+              max-height: 400px;
+              object-fit: contain;
+              background-color: #f8f9fa;
+            "
             alt="No photos yet"
           />
         </div>
         <% } %>
       </div>
       <% if(campground.images.length>1){ %>
-      <a
+      <button
         class="carousel-control-prev"
-        href="#campgroundCarousel"
-        role="button"
-        data-slide="prev"
+        type="button"
+        data-bs-target="#campgroundCarousel"
+        data-bs-slide="prev"
       >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button
         class="carousel-control-next"
-        href="#campgroundCarousel"
-        role="button"
-        data-slide="next"
+        type="button"
+        data-bs-target="#campgroundCarousel"
+        data-bs-slide="next"
       >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a>
+        <span class="visually-hidden">Next</span>
+      </button>
       <% } %>
     </div>
 
@@ -60,7 +68,7 @@
           <img
             src="<%= campground.author.avatarUrl || 'https://www.gravatar.com/avatar/?d=mp' %>"
             alt="User avatar"
-            class="rounded-circle mr-2"
+            class="rounded-circle me-2"
             style="width: 30px; height: 30px; object-fit: cover"
           />
           Submitted by <%= campground.author.name || campground.author.email %>
@@ -96,7 +104,7 @@
     </div>
   </div>
 
-  <div class="col-6">
+  <div class="col-12 col-md-6">
     <div id="map"></div>
     <% if(currentUser){ %>
     <h2>Leave a review</h2>

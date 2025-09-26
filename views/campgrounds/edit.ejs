@@ -87,22 +87,30 @@
         <div class="invalid-feedback">Please select a valid description.</div>
       </div>
       <div class="mb-3">
-        <% if (campground.images && campground.images.length> 0) { %> <%
-        campground.images.forEach((img,i)=> {%>
-        <div class="delete-image-wrapper">
-          <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="" />
-          <button
-            type="button"
-            class="btn btn-sm btn-danger delete-btn"
-            data-filename="<%= img.filename %>"
-            data-bs-toggle="modal"
-            data-bs-target="#confirmDeleteModal"
-          >
-            <i class="fa-solid fa-trash"></i>
-          </button>
+        <% if (campground.images && campground.images.length> 0) { %>
+        <div class="row g-3">
+          <% campground.images.forEach((img,i)=> { %>
+          <div class="col-6 col-md-6 col-lg-4">
+            <div class="delete-image-wrapper">
+              <img
+                src="<%= img.url.replace('/upload', '/upload/w_400,h_300,c_fill') %>"
+                class="img-fluid rounded shadow-sm campground-thumb"
+                alt="Campground image"
+              />
+              <button
+                type="button"
+                class="btn btn-sm btn-danger delete-btn"
+                data-filename="<%= img.filename %>"
+                data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteModal"
+              >
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <% }) %>
         </div>
 
-        <% }) %>
         <div id="deleteInputs"></div>
         <% } else { %>
         <p class="text-muted">No images uploaded</p>

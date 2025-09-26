@@ -9,44 +9,41 @@
     <button
       class="navbar-toggler"
       type="button"
-      data-toggle="collapse"
-      data-target="#navbarNavAltMarkup"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
       aria-controls="navbarNavAltMarkup"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
+    <!-- Navbar Search and Links -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+      <div class="navbar-nav me-auto">
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link" href="/campgrounds">Campgrounds</a>
         <a class="nav-link" href="/campgrounds/new">New Campgrounds</a>
       </div>
 
-      <!-- Centered Search Bar -->
-      <div class="mx-auto">
-        <form
-          class="d-flex align-items-center search-form"
-          action="/campgrounds"
-          method="GET"
-          style="width: 400px; max-width: 100%"
-        >
-          <input
-            class="form-control me-3"
-            type="search"
-            name="q"
-            placeholder="Search campgrounds..."
-            aria-label="Search"
-            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
-          />
-          <button class="btn btn-outline-light ms-4" type="submit">
-            Search
-          </button>
-        </form>
-      </div>
+      <!-- Search Form (responsive) -->
+      <form
+        class="d-flex my-2 my-lg-0"
+        action="/campgrounds"
+        method="GET"
+        style="width: 100%; max-width: 400px"
+      >
+        <input
+          class="form-control me-2"
+          type="search"
+          name="q"
+          placeholder="Search campgrounds..."
+          aria-label="Search"
+          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+        />
+        <button class="btn btn-outline-light" type="submit">Search</button>
+      </form>
 
-      <div class="navbar-nav ms-auto">
+      <div class="navbar-nav ms-lg-3 mt-2 mt-lg-0">
         <% if(!currentUser){ %>
         <a class="nav-link" href="/login">Login</a>
         <a class="nav-link" href="/register">Register</a>
