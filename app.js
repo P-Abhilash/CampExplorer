@@ -1,5 +1,5 @@
-if(process.env.NODE_ENV !== "production"){
-    require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 // require("dotenv").config();
 
@@ -128,7 +128,7 @@ app.use(
         "'self'",
         "blob:",
         "data:",
-        "https://res.cloudinary.com/igoswamik/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        "https://res.cloudinary.com/abhilashp/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
         "https://images.unsplash.com/",
         "https://www.pexels.com/",
         "https://fontawesome.com/",
