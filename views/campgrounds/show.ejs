@@ -66,9 +66,9 @@
         <li class="list-group-item d-flex align-items-center">
           <% if (campground.author) { %>
           <img
-            src="<%= campground.author.avatarUrl || 'https://www.gravatar.com/avatar/?d=mp' %>"
+            src="<%= (campground.author && campground.author.avatarUrl) ? campground.author.avatarUrl : 'https://www.gravatar.com/avatar/?d=mp&s=64' %>"
             alt="User avatar"
-            class="rounded-circle me-2"
+            class="rounded-circle me-2 flex-shrink-0"
             style="width: 30px; height: 30px; object-fit: cover"
           />
           Submitted by <%= campground.author.name || campground.author.email %>
