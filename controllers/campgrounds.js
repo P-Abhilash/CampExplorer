@@ -168,7 +168,22 @@ module.exports.updateCampground = async (req, res, next) => {
 
 module.exports.deleteCampground = async (req, res) => {
   const { id } = req.params;
-  const campground = await Campground.findByIdAndDelete(id);
+  const campground = await Campground.findById(id);
+
+  if (!campground) {
+    req.flash("error", "Campground not found");
+    return res.redirect("/campgrounds");
+  }
+
+  // ✅ Bulk delete all associated images from Cloudinary
+  if (campground.images && campground.images.length > 0) {
+    await cloudinary.api.delete_resources(
+      campground.images.map((img) => img.filename)
+    );
+  }
+
+  await Campground.findByIdAndDelete(id);
+
   req.flash("success", "Successfully deleted a campground");
   res.redirect("/campgrounds");
 };

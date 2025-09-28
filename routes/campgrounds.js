@@ -9,12 +9,15 @@ const { storage } = require("../cloudinary");
 
 const upload = multer({
   storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // ✅ 5MB per file
+  },
   fileFilter: (req, file, cb) => {
     if (file.mimetype && file.mimetype.startsWith("image/")) {
-      cb(null, true); // ✅ allow image
+      cb(null, true);
     } else {
       req.fileValidationError = "Only image files are allowed!";
-      cb(null, false); // reject file but don’t throw error
+      cb(null, false);
     }
   },
 });
@@ -29,7 +32,7 @@ router
   .get(catchAsync(campgrounds.index))
   .post(
     isLoggedIn,
-    upload.array("image"),
+    upload.array("image", 5),
     validateCampground,
     catchAsync(campgrounds.createCampground)
   );
@@ -50,7 +53,7 @@ router
   .put(
     isLoggedIn,
     isAuthor,
-    upload.array("image"),
+    upload.array("image", 5),
     validateCampground,
     catchAsync(campgrounds.updateCampground)
   )

@@ -19,6 +19,7 @@ const flash = require("connect-flash");
 const User = require("./models/user");
 const helmet = require("helmet"); //Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!
 const mongoSanitize = require("express-mongo-sanitize"); //it will remove any prohibited character (ex-$, . etc) from query string
+const multer = require("multer");
 
 const userRoutes = require("./routes/users");
 const campgroundRoutes = require("./routes/campgrounds");
@@ -128,7 +129,7 @@ app.use(
         "'self'",
         "blob:",
         "data:",
-        "https://res.cloudinary.com/abhilashp/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`, //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
         "https://images.unsplash.com/",
         "https://www.pexels.com/",
         "https://fontawesome.com/",
@@ -159,6 +160,25 @@ app.get("/about", (req, res) => {
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+      req.flash("error", "You can upload up to 5 images only!");
+      req.session.formData = req.body.campground; // ✅ preserve form values
+      if (req.originalUrl.includes("/campgrounds/") && req.method === "PUT") {
+        return res.redirect(req.originalUrl.replace("?_method=PUT", "/edit"));
+      }
+      return res.redirect("/campgrounds/new");
+    }
+    if (err.code === "LIMIT_FILE_SIZE") {
+      req.flash("error", "Image too large! Max size is 5MB per file.");
+      req.session.formData = req.body.campground; // ✅ preserve form values
+      return res.redirect("back");
+    }
+  }
+  next(err);
 });
 
 app.use((err, req, res, next) => {
