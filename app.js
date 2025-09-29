@@ -27,6 +27,7 @@ const reviewRoutes = require("./routes/reviews");
 
 const MongoDBStore = require("connect-mongo")(session);
 
+const avatarRoute = require("./routes/avatar");
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/camp-explorer";
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -46,6 +47,7 @@ app.engine("ejs", ejsMate); // we tell express thats the one we wanna use istead
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+app.use("/avatar", avatarRoute);
 app.use(express.urlencoded({ extended: true })); //it will parse the req body for us
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public"))); //telling express to serve one public directory named public
@@ -188,6 +190,6 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 3000; //process.env.PORT will be automatically present on heroku
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`SERVING ON PORT ${port}!`);
 });
