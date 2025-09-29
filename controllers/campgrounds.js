@@ -141,6 +141,13 @@ module.exports.updateCampground = async (req, res, next) => {
     );
     campground.geometry = geoData.features[0].geometry;
     const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    if (campground.images.length + imgs.length > 5) {
+      req.flash(
+        "error",
+        "You can upload a maximum of 5 images per campground."
+      );
+      return res.redirect(`/campgrounds/${id}/edit`);
+    }
     campground.images.push(...imgs); //push on existing images
     await campground.save();
     if (req.body.deleteImages) {
