@@ -41,6 +41,8 @@ router
 //     res.send("IT Worked!!");  //if we use arry those files will we stores in req.files
 // })
 
+router.get("/mine", isLoggedIn, catchAsync(campgrounds.myCampgrounds));
+
 router.get("/new", isLoggedIn, (req, res) => {
   const formData = req.session.formData || {};
   delete req.session.formData; // clear after use

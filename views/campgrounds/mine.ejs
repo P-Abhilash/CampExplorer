@@ -1,0 +1,60 @@
+<% layout('layouts/boilerplate') %> 
+
+<h1>My Campgrounds</h1>
+
+<div class="container mt-4">
+  <% if (campgrounds.length > 0) { %>
+    <div class="row">
+      <% campgrounds.forEach((campground, i) => { %>
+        <div class="col-md-6 mb-4">
+          <div class="card h-100 shadow-sm">
+            <% if (campground.images.length) { %>
+              <img class="card-img-top" alt="" src="<%= campground.images[0].url %>" 
+                   style="height: 300px; object-fit: cover;">
+            <% } else { %>
+              <img class="card-img-top" alt="" 
+                   src="https://res.cloudinary.com/abhilashp/image/upload/v1757947697/CampExplorer/camping3_um0dwr.jpg" 
+                   style="height: 300px; object-fit: cover;">
+            <% } %>
+
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title"><%= campground.title %></h5>
+              <p class="card-text text-muted"><%= campground.location %></p>
+              <p class="card-text"><%= campground.description.substring(0, 100) %>...</p>
+              <p class="fw-bold">$<%= campground.price %>/night</p>
+
+              <% if (campground.reviews && campground.reviews.length > 0) { %>
+                <% let validRatings = campground.reviews.map(r => r.rating)
+                    .filter(r => typeof r === "number" && !isNaN(r));
+                   let avgRating = validRatings.length > 0
+                    ? (validRatings.reduce((a,b) => a+b,0)/validRatings.length).toFixed(1)
+                    : null; %>
+
+                <% if (avgRating) { %>
+                  <p class="text-warning mb-1">
+                    <% for (let i=0; i<Math.floor(avgRating); i++) { %>★<% } %>
+                    <% for (let i=Math.floor(avgRating); i<5; i++) { %>☆<% } %>
+                    <small>(<%= avgRating %>/5, <%= validRatings.length %> reviews)</small>
+                  </p>
+                <% } %>
+              <% } else { %>
+                <p class="text-muted"><em>No reviews yet</em></p>
+              <% } %>
+
+              <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary mt-auto">View Campground</a>
+            </div>
+          </div>
+        </div>
+
+        <% if ((i+1) % 2 === 0) { %>
+          </div><div class="row">
+        <% } %>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="text-center my-5">
+      <h4 class="text-muted">You haven’t created any campgrounds yet.</h4>
+      <a href="/campgrounds/new" class="btn btn-success mt-3">Create one now</a>
+    </div>
+  <% } %>
+</div>

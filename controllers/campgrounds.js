@@ -194,3 +194,17 @@ module.exports.deleteCampground = async (req, res) => {
   req.flash("success", "Successfully deleted a campground");
   res.redirect("/campgrounds");
 };
+
+module.exports.myCampgrounds = async (req, res) => {
+  try {
+    const campgrounds = await Campground.find({ author: req.session.user.id })
+      .populate("reviews")
+      .sort({ createdAt: -1 });
+
+    res.render("campgrounds/mine", { campgrounds });
+  } catch (err) {
+    console.error("❌ Error loading my campgrounds:", err);
+    req.flash("error", "Unable to load your campgrounds.");
+    res.redirect("/campgrounds");
+  }
+};
