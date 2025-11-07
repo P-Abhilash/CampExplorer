@@ -92,52 +92,43 @@ app.use(flash());
 app.use(helmet()); //this will automatically enable all 11 middleware defined in it see docs- https://helmetjs.github.io/ one of those is contentPolicysECURITY WILL WILL CREATE SOME PROBLEM currently so disabling it for now
 
 const scriptSrcUrls = [
-  "https://stackpath.bootstrapcdn.com/",
-  // "https://api.tiles.mapbox.com/",
-  // "https://api.mapbox.com/",
-  "https://kit.fontawesome.com/",
-  "https://cdnjs.cloudflare.com/",
+  "https://kit.fontawesome.com",
+  "https://cdnjs.cloudflare.com",
   "https://cdn.jsdelivr.net",
-  "https://cdn.maptiler.com/", // add this
+  "https://cdn.maptiler.com",
+  "https://api.maptiler.com",
 ];
+
 const styleSrcUrls = [
-  "https://kit-free.fontawesome.com/",
-  "https://stackpath.bootstrapcdn.com/",
-  // "https://api.mapbox.com/",
-  // "https://api.tiles.mapbox.com/",
-  "https://fonts.googleapis.com/",
-  "https://use.fontawesome.com/",
+  "https://fonts.googleapis.com",
   "https://cdn.jsdelivr.net",
-  "https://cdn.maptiler.com/", // add this
+  "https://cdn.maptiler.com",
+  "https://api.maptiler.com",
+  "https://stackpath.bootstrapcdn.com",
 ];
-const connectSrcUrls = [
-  // "https://api.mapbox.com/",
-  // "https://a.tiles.mapbox.com/",
-  // "https://b.tiles.mapbox.com/",
-  // "https://events.mapbox.com/",
-  "https://api.maptiler.com/", // add this
+
+const connectSrcUrls = ["https://api.maptiler.com", "https://cdn.maptiler.com"];
+
+const imgSrcUrls = [
+  "blob:",
+  "data:",
+  `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
+  "https://images.unsplash.com",
+  "https://cdn.maptiler.com",
+  "https://api.maptiler.com",
 ];
-const fontSrcUrls = [];
+
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: [],
-      connectSrc: ["'self'", ...connectSrcUrls],
-      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      scriptSrc: ["'self'", "'unsafe-inline'", ...scriptSrcUrls],
       styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      imgSrc: ["'self'", ...imgSrcUrls],
       workerSrc: ["'self'", "blob:"],
       objectSrc: [],
-      imgSrc: [
-        "'self'",
-        "blob:",
-        "data:",
-        `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`, //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
-        "https://images.unsplash.com/",
-        "https://www.pexels.com/",
-        "https://fontawesome.com/",
-        "https://api.maptiler.com/",
-      ],
-      fontSrc: ["'self'", ...fontSrcUrls],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
     },
   })
 );
